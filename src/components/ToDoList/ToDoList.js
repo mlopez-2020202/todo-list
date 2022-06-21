@@ -26,24 +26,17 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
 export const ToDoList = () => {
-  //status for to do list
   const [todos, setTodos] = useState([]);
-
-  //status for each attribute in the list(update)
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [priority, setPriority] = useState(0);
   const [complete, setComplete] = useState(false);
-  const [open, setOpen] = useState(false);
   const [idTask, setIdTask] = useState('');
-
-  //Navigate
   const [navigate, setNavigate] = useState(false);
   const [navigateTask, setNavigateTask] = useState(false);
   const [navigateUpdateTask, setNavigateUpdateTask] = useState(false);
   const [navigateDeleteTask, setNavigateDeleteTask] = useState(false);
 
-  //Get all tasks for a user
   useEffect(() => {
     axios.defaults.headers.common['Authorization'] = getToken();
     axios.get('http://localhost:3200/task/getTasks')
@@ -56,9 +49,8 @@ export const ToDoList = () => {
           confirmButtonColor: '#E74C3C'
         });
       });
-  }, [idTask])
+  }, [])
 
-  //styles for the table
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
       backgroundColor: theme.palette.primary.main,
@@ -77,35 +69,30 @@ export const ToDoList = () => {
     },
   }));
 
-  //run multiple functions
   const rows = todos.map((task) => {
-    let complete;
+    var complete;
     if (task.task.complete === false) {
       complete = 'Incomplete'
     } else if (task.task.complete === true) {
       complete = 'Complete';
     }
     return {
-      Title: task.task.title, Description: task.task.description, Priority: task.task.priority, 
-      Complete: complete , Id: task.task._id,
+      Title: task.task.title, Description: task.task.description, Priority: task.task.priority, Complete: complete , Id: task.task._id,
       Edit: <Button sx={{ color: '#000000' }}  startIcon={<EditIcon />} onClick={() => updateTaskButton(task.task._id)}> </Button>,
-      Remove: <Button sx={{ color: '#000000' }} startIcon={<DeleteIcon/>} onClick={() => deleteTaskButton(task.task._id)}> </Button>
+      Delete: <Button sx={{ color: '#000000' }} startIcon={<DeleteIcon/>} onClick={() => deleteTaskButton(task.task._id)}> </Button>
     }
   });
 
-  //LogOut
   const logout = async () => {
     localStorage.removeItem('identity');
     localStorage.removeItem('token');
     setNavigate(true);
   }
 
-  //Retornar al login
   if (navigate) {
     return <Navigate to='/login' />;
   }
 
-  //Redirige a añadir una task
   const addTask = () => {
     setNavigateTask(true)
   }
@@ -120,7 +107,6 @@ export const ToDoList = () => {
     return <DeleteTask title={title} setTitle={setTitle} description={description} setDescription={setDescription} priority={priority} setPriority={setPriority} complete={complete} setComplete={setComplete} idTask={idTask}/>
   }
 
-  //Redirige a actualizar una task
   const navigateUpdate = () => {
     setNavigateUpdateTask(true)
   }
@@ -128,12 +114,14 @@ export const ToDoList = () => {
     return <UpdateTask title={title} setTitle={setTitle} description={description} setDescription={setDescription} priority={priority} setPriority={setPriority} complete={complete} setComplete={setComplete} idTask={idTask}/>;
   }
 
-  //Obtener Id de una Tarea
-  const getIdTask = (id) => setIdTask(id);
+  const getIdTask = (id) => {
+    setIdTask(id);
+  } 
 
-  const GetATask = (idTask) => GetTask(setTitle, setDescription, setPriority, setComplete, idTask);
+  const GetATask = (idTask) => {
+    GetTask(setTitle, setDescription, setPriority, setComplete, idTask);
+  } 
 
-  //run multiple functions
   async function updateTaskButton(taskId) {
     await getIdTask(taskId);
     await GetATask(taskId);
@@ -176,7 +164,7 @@ export const ToDoList = () => {
                 <StyledTableCell align="center">{row.Priority}</StyledTableCell>
                 <StyledTableCell sx={row.Complete == 'Complete'? {color: '#06A319'}:{color: '#DE3E22'}} align="center">{row.Complete}</StyledTableCell>
                 <StyledTableCell align="center">{row.Edit}</StyledTableCell>
-                <StyledTableCell align="center">{row.Remove}</StyledTableCell>
+                <StyledTableCell align="center">{row.Delete}</StyledTableCell>
               </StyledTableRow>
             ))}
           </TableBody>

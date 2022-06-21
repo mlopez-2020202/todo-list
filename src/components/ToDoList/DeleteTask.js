@@ -71,7 +71,7 @@ const DeleteTask = ({title, setTitle,description, setDescription, priority, setP
                         autoComplete="title"
                         autoFocus
                         value={title}
-                        onChange={event => { setTitle(event.target.value); console.log(title) }}
+                        onChange={event => { setTitle(event.target.value)}}
                     />
                     <TextField
                         margin="normal"
